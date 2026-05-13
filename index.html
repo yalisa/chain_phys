@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Физика: заполни пропуски в формулах</title>
-    <!-- MathJax v3 для отображения формул -->
+    <title>Физика: заполни пропуски в формулах (греческие буквы)</title>
+    <!-- MathJax v3 для отображения формул (включая греческие буквы) -->
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <style>
         * {
@@ -209,16 +209,6 @@
             box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
         }
 
-        .badge-empty {
-            font-size: 0.7rem;
-            background: #e2e8f0;
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 30px;
-            margin-left: 6px;
-            color: #1e293b;
-        }
-
         footer {
             margin-top: 48px;
             text-align: center;
@@ -227,6 +217,7 @@
             border-top: 1px solid #cbd5e1;
             padding-top: 24px;
         }
+
         @media (max-width: 640px) {
             .card-body {
                 padding: 16px;
@@ -249,7 +240,8 @@
     </h1>
     <div class="sub">
         📐 Каждый «?» обозначает пропущенную величину. Введи ответ в поля ниже — формула будет обновляться автоматически.
-        <br>💡 Можно использовать LaTeX (например, \Delta, \theta, \frac{...}{...}). Пустое поле оставляет знак «?».
+        <br>💡 Можно использовать LaTeX: <code>\alpha, \beta, \pi, \Delta, \theta, \omega</code> и другие греческие буквы.
+        <br>🔽 Пример: введи <code>\frac{mv^2}{2}</code> или <code>\omega t</code>.
     </div>
     <div class="controls">
         <button id="fillSamplesBtn" class="primary">🔍 Показать примеры ответов</button>
@@ -257,67 +249,65 @@
     </div>
     <div id="formulasContainer" class="grid"></div>
     <footer>
-        Формулы из задания • Введи свои варианты • Формулы в реальном времени
+        Формулы из задания • Греческие буквы отображаются через LaTeX (например, \alpha → α)
     </footer>
 </div>
 
 <script>
-    // ----- Исходные данные формул (LaTeX с символами '?', количество пропусков, примеры для подсказки) -----
+    // ----- Исходные данные формул (исправлено количество '?' и blanksCount) -----
     const formulasData = [
         { 
-            latex: "F_A = ? I L \sin \alpha",
+            latex: "F_A = ? \\, I \\, L \\, \\sin \\alpha",
             blanksCount: 1,
-            samples: ["F/A"]    // Давление = сила/площадь
+            samples: ["B"]   // сила Ампера: F_A = B I L sinα → пропуск B
         },
         { 
-            latex: "? = \\frac{?}{? v \sin \alpha}",
+            latex: "? = \\frac{?}{? \\, v \\, \\sin \\alpha}",
+            blanksCount: 3,   // три пропуска: левая часть, числитель, знаменатель (без v sinα)
+            samples: ["B", "F_A", "I"]   // B = F_A / (I v sinα) для силы Лоренца
+        },
+        { 
+            latex: "R = \\frac{? \\, v}{B \\, ?}",
             blanksCount: 2,
-            samples: ["v", "s"]   // например v = s / 0.5  (скорость)
+            samples: ["m", "|q|"]   // радиус в магнитном поле: R = (m v)/(|q| B)
         },
         { 
-            latex: "R = \\frac{? v}{B ?}",
-            blanksCount: 1,
-            samples: ["\\Phi"]     // магнитный поток? или МДС: R = F / (B·A) , F - МДС
-        },
-        { 
-            latex: "T = \\frac{2\\pi}{? |q|}",
+            latex: "T = \\frac{2\\pi}{\\omega}",
             blanksCount: 0,
             samples: []
         },
         { 
-            latex: "? = \\frac{?}{S \cos \alpha}",
-            blanksCount: 1,
-            samples: ["\\cos \\theta"]
-        },
-        { 
-            latex: "? = ?I",
+            latex: "? = \\frac{?}{S \\, \\cos \\alpha}",
             blanksCount: 2,
-            samples: ["U", "R"]    // U = R·I  (закон Ома)
+            samples: ["p", "F"]   // давление: p = F / (S cosα) для наклонной площадки
         },
         { 
-            latex: "W_m = \\frac{?  ?^2}{2}",
-            blanksCount: 1,
-            samples: ["L I^2"]     // энергия магн. поля: LI^2/2
+            latex: "? = ? \\, I",
+            blanksCount: 2,
+            samples: ["U", "R"]   // U = R·I
         },
         { 
-            latex: "E_c = -\\frac{L \\Delta ?}{?}",
+            latex: "W_m = \\frac{? \\, I^2}{2}",
             blanksCount: 1,
-            samples: ["I"]         // ЭДС самоиндукции: -L·ΔI/Δt, но в формуле -L Δ? => ΔI
+            samples: ["L"]   // энергия магнитного поля катушки: W_m = (L I^2)/2
+        },
+        { 
+            latex: "\\mathcal{E}_c = - \\, \\frac{L\\Delta ?}{?}",
+            blanksCount: 1,
+            samples: ["I"]   // ЭДС самоиндукции: ε_c = -L ΔI/Δt
         },
         { 
             latex: "? = \\frac{-\\Delta P}{?}",
             blanksCount: 2,
-            samples: ["\\frac{\\Delta V}{V}", "B"]   // объемная упругость: ΔV/V = -ΔP/B
+            samples: ["\\frac{\\Delta V}{V}", "B"]   // объёмная упругость: ΔV/V = -ΔP/B
         }
     ];
 
-    // Массив для хранения объектов карточек (ссылки на DOM и состояние)
     let cards = [];
 
-    // Функция замены '?' в строке latex на значения из массива replacers (если значение пустое -> оставляем '?')
+    // Замена '?' в строке latex на значения из массива replacements
     function replaceBlanks(latexStr, replacements) {
         let idx = 0;
-        // заменяем каждый '?' последовательно
         return latexStr.replace(/\?/g, () => {
             const val = (idx < replacements.length && replacements[idx] !== undefined && replacements[idx].trim() !== "") 
                 ? replacements[idx].trim() 
@@ -332,11 +322,8 @@
         const inputValues = card.inputs.map(inp => inp.value);
         const newLatex = replaceBlanks(card.originalLatex, inputValues);
         card.currentLatex = newLatex;
-        // обновить содержимое preview
         const displayDiv = card.previewDiv;
-        // Обернем в \( ... \) для инлайн режима, но для удобства используем display-стиль, но mathjax понимает и так
         displayDiv.innerHTML = `\\(\\displaystyle ${newLatex}\\)`;
-        // Перерендерим MathJax для этого элемента
         if (window.MathJax) {
             try {
                 await MathJax.typesetPromise([displayDiv]);
@@ -351,7 +338,6 @@
         const cardDiv = document.createElement('div');
         cardDiv.className = 'card';
         
-        // Header
         const header = document.createElement('div');
         header.className = 'card-header';
         header.innerHTML = `
@@ -362,14 +348,12 @@
         const body = document.createElement('div');
         body.className = 'card-body';
         
-        // preview область с формулой
         const previewBlock = document.createElement('div');
         previewBlock.className = 'formula-preview';
         const mathSpan = document.createElement('div');
         mathSpan.className = 'math';
         previewBlock.appendChild(mathSpan);
         
-        // Блок с полями ввода
         const blanksBlock = document.createElement('div');
         blanksBlock.className = 'blanks-area';
         const blanksTitle = document.createElement('div');
@@ -410,7 +394,6 @@
         cardDiv.appendChild(header);
         cardDiv.appendChild(body);
         
-        // Объект карточки
         const cardObj = {
             dom: cardDiv,
             previewDiv: mathSpan,
@@ -421,16 +404,13 @@
             index: index
         };
         
-        // Добавляем обработчики событий на поля ввода
         if (inputElements.length) {
             const updateHandler = () => updateFormulaDisplay(cardObj);
             inputElements.forEach(inp => {
                 inp.addEventListener('input', updateHandler);
             });
-            // Первый рендер (с пустыми полями -> все '?' останутся)
             setTimeout(() => updateFormulaDisplay(cardObj), 0);
         } else {
-            // Если нет пропусков, просто отображаем исходную формулу без изменений
             cardObj.currentLatex = formula.latex;
             mathSpan.innerHTML = `\\(\\displaystyle ${formula.latex}\\)`;
             if (window.MathJax) {
@@ -441,7 +421,7 @@
         return { cardDiv, cardObj };
     }
     
-    // Заполнить все поля примерами (образцы)
+    // Заполнить все поля примерами
     function fillAllSamples() {
         for (let card of cards) {
             if (card.blanksCount > 0 && card.samples.length) {
@@ -450,13 +430,12 @@
                         card.inputs[i].value = card.samples[i];
                     }
                 }
-                // обновить отображение после установки значений
                 updateFormulaDisplay(card);
             }
         }
     }
     
-    // Очистить все поля ввода (оставить пустыми, формула вернет ?)
+    // Очистить все поля
     function clearAllInputs() {
         for (let card of cards) {
             if (card.inputs.length) {
@@ -468,7 +447,7 @@
         }
     }
     
-    // Инициализация рендера всех карточек
+    // Построение всех карточек
     function buildAllCards() {
         const container = document.getElementById('formulasContainer');
         container.innerHTML = '';
@@ -480,16 +459,13 @@
         });
     }
     
-    // Дополнительная подгрузка: после сборки обеспечим первую отрисовку MathJax
     async function initialRender() {
         buildAllCards();
-        // После построения убедимся, что все формулы отрендерены
         if (window.MathJax) {
             try {
                 await MathJax.typesetPromise();
             } catch(e) { console.warn(e); }
         }
-        // для карт с пропусками, если поля пустые — отображаются '?'
         for (let card of cards) {
             if (card.inputs && card.inputs.length) {
                 await updateFormulaDisplay(card);
@@ -497,25 +473,15 @@
         }
     }
     
-    // Дожидаемся загрузки страницы и MathJax готовности
     window.addEventListener('load', async () => {
-        // Ожидаем, что MathJax инициализируется, но запускаем построение после загрузки
-        if (window.MathJax) {
-            // Даём MathJax небольшую фору, но построим сразу
-            await initialRender();
-        } else {
-            // fallback: если вдруг MathJax не загрузился, но такого не произойдёт
-            initialRender();
-        }
-        
-        // Кнопки управления
+        await initialRender();
         const sampleBtn = document.getElementById('fillSamplesBtn');
         const clearBtn = document.getElementById('clearAllBtn');
         if (sampleBtn) sampleBtn.addEventListener('click', fillAllSamples);
         if (clearBtn) clearBtn.addEventListener('click', clearAllInputs);
     });
     
-    // дополнительная страховка: если MathJax еще не полностью отработал, перерендер через таймаут
+    // Повторный рендеринг для греческих букв, введённых пользователем
     window.addEventListener('load', () => {
         setTimeout(() => {
             if (window.MathJax && cards.length) {
