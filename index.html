@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Физика: заполни пропуски в формулах</title>
+    <!-- MathJax v3 для отображения формул -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f1f5f9;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 24px 16px;
+            color: #0f172a;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #0f2b3d;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .sub {
+            color: #334155;
+            border-left: 4px solid #3b82f6;
+            padding-left: 16px;
+            margin: 1rem 0 2rem 0;
+            font-size: 1rem;
+            background: #eef2ff;
+            border-radius: 0 20px 20px 0;
+            line-height: 1.3;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            color: #1e293b;
+        }
+
+        button.primary {
+            background: #1e3a8a;
+            border-color: #1e3a8a;
+            color: white;
+        }
+
+        button.primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        button.secondary {
+            background: #f8fafc;
+        }
+
+        button.secondary:hover {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+        }
+
+        button.warning {
+            background: #fef9c3;
+            border-color: #eab308;
+            color: #854d0e;
+        }
+
+        button.warning:hover {
+            background: #fde047;
+        }
+
+        .grid {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            transition: all 0.1s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-header {
+            background: #f8fafc;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+            font-size: 1.2rem;
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .formula-num {
+            background: #3b82f6;
+            color: white;
+            border-radius: 40px;
+            padding: 2px 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .formula-preview {
+            background: #fefce8;
+            padding: 20px 16px;
+            border-radius: 24px;
+            text-align: center;
+            font-size: 1.3rem;
+            border: 1px solid #fde68a;
+            margin-bottom: 24px;
+            box-shadow: inset 0 1px 3px #00000008, 0 1px 2px white;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .formula-preview .math {
+            font-size: 1.2rem;
+        }
+
+        .blanks-area {
+            background: #f1f5f9;
+            border-radius: 20px;
+            padding: 18px 20px;
+        }
+
+        .blanks-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 14px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+        }
+
+        .input-item {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .input-item label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .input-item input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-family: 'Courier New', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .input-item input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+
+        .badge-empty {
+            font-size: 0.7rem;
+            background: #e2e8f0;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 30px;
+            margin-left: 6px;
+            color: #1e293b;
+        }
+
+        footer {
+            margin-top: 48px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #64748b;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 24px;
+        }
+        @media (max-width: 640px) {
+            .card-body {
+                padding: 16px;
+            }
+            .input-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .formula-preview {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        ⚛️ Заполни пропуски в формулах 
+        <span style="font-size: 0.8rem; background: #e6f0ff; padding: 5px 12px; border-radius: 60px;">✏️ интерактивные поля</span>
+    </h1>
+    <div class="sub">
+        📐 Каждый «?» обозначает пропущенную величину. Введи ответ в поля ниже — формула будет обновляться автоматически.
+        <br>💡 Можно использовать LaTeX (например, \Delta, \theta, \frac{...}{...}). Пустое поле оставляет знак «?».
+    </div>
+    <div class="controls">
+        <button id="fillSamplesBtn" class="primary">🔍 Показать примеры ответов</button>
+        <button id="clearAllBtn" class="secondary">🧹 Очистить все поля</button>
+    </div>
+    <div id="formulasContainer" class="grid"></div>
+    <footer>
+        Формулы из задания • Введи свои варианты • Формулы в реальном времени
+    </footer>
+</div>
+
+<script>
+    // ----- Исходные данные формул (LaTeX с символами '?', количество пропусков, примеры для подсказки) -----
+    const formulasData = [
+        { 
+            latex: "F_A = ? I L \sin\alpha",
+            blanksCount: 1,
+            samples: ["F/A"]    // Давление = сила/площадь
+        },
+        { 
+            latex: "? = \\frac{?}{? v \sin\alpha}",
+            blanksCount: 2,
+            samples: ["v", "s"]   // например v = s / 0.5  (скорость)
+        },
+        { 
+            latex: "R = \\frac{? v}{B ?}",
+            blanksCount: 1,
+            samples: ["\\Phi"]     // магнитный поток? или МДС: R = F / (B·A) , F - МДС
+        },
+        { 
+            latex: "T = \\frac{2\\pi}{? |q|}",
+            blanksCount: 0,
+            samples: []
+        },
+        { 
+            latex: "? = \\frac{?}{S \cos\alpha}",
+            blanksCount: 1,
+            samples: ["\\cos\\theta"]
+        },
+        { 
+            latex: "? = ?I",
+            blanksCount: 2,
+            samples: ["U", "R"]    // U = R·I  (закон Ома)
+        },
+        { 
+            latex: "W_m = \\frac{? ?^2}{2}",
+            blanksCount: 1,
+            samples: ["L I^2"]     // энергия магн. поля: LI^2/2
+        },
+        { 
+            latex: "E_c = -\\frac{L \\Delta ?}{?}",
+            blanksCount: 1,
+            samples: ["I"]         // ЭДС самоиндукции: -L·ΔI/Δt, но в формуле -L Δ? => ΔI
+        },
+        { 
+            latex: "? = \\frac{-\\Delta P}{?}",
+            blanksCount: 2,
+            samples: ["\\frac{\\Delta V}{V}", "B"]   // объемная упругость: ΔV/V = -ΔP/B
+        }
+    ];
+
+    // Массив для хранения объектов карточек (ссылки на DOM и состояние)
+    let cards = [];
+
+    // Функция замены '?' в строке latex на значения из массива replacers (если значение пустое -> оставляем '?')
+    function replaceBlanks(latexStr, replacements) {
+        let idx = 0;
+        // заменяем каждый '?' последовательно
+        return latexStr.replace(/\?/g, () => {
+            const val = (idx < replacements.length && replacements[idx] !== undefined && replacements[idx].trim() !== "") 
+                ? replacements[idx].trim() 
+                : "?";
+            idx++;
+            return val;
+        });
+    }
+
+    // Обновление отображения формулы для конкретной карточки
+    async function updateFormulaDisplay(card) {
+        const inputValues = card.inputs.map(inp => inp.value);
+        const newLatex = replaceBlanks(card.originalLatex, inputValues);
+        card.currentLatex = newLatex;
+        // обновить содержимое preview
+        const displayDiv = card.previewDiv;
+        // Обернем в \( ... \) для инлайн режима, но для удобства используем display-стиль, но mathjax понимает и так
+        displayDiv.innerHTML = `\\(\\displaystyle ${newLatex}\\)`;
+        // Перерендерим MathJax для этого элемента
+        if (window.MathJax) {
+            try {
+                await MathJax.typesetPromise([displayDiv]);
+            } catch(err) {
+                console.warn("MathJax error:", err);
+            }
+        }
+    }
+
+    // Создание карточки формулы
+    function createFormulaCard(formula, index) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'card';
+        
+        // Header
+        const header = document.createElement('div');
+        header.className = 'card-header';
+        header.innerHTML = `
+            <span>Формула ${index+1}</span>
+            <span class="formula-num">${formula.blanksCount} пропуск(а/ов)</span>
+        `;
+        
+        const body = document.createElement('div');
+        body.className = 'card-body';
+        
+        // preview область с формулой
+        const previewBlock = document.createElement('div');
+        previewBlock.className = 'formula-preview';
+        const mathSpan = document.createElement('div');
+        mathSpan.className = 'math';
+        previewBlock.appendChild(mathSpan);
+        
+        // Блок с полями ввода
+        const blanksBlock = document.createElement('div');
+        blanksBlock.className = 'blanks-area';
+        const blanksTitle = document.createElement('div');
+        blanksTitle.className = 'blanks-title';
+        blanksTitle.innerHTML = `✏️ Заполните пропуски ${formula.blanksCount > 0 ? '(«?» в формуле)' : '(нет пропусков)'}`;
+        blanksBlock.appendChild(blanksTitle);
+        
+        const inputsContainer = document.createElement('div');
+        inputsContainer.className = 'input-group';
+        
+        const inputElements = [];
+        if (formula.blanksCount > 0) {
+            for (let i = 0; i < formula.blanksCount; i++) {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'input-item';
+                const label = document.createElement('label');
+                label.innerText = `Пропуск ${i+1}`;
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = `например, ${formula.samples[i] || '?'}`;
+                input.autocomplete = 'off';
+                itemDiv.appendChild(label);
+                itemDiv.appendChild(input);
+                inputsContainer.appendChild(itemDiv);
+                inputElements.push(input);
+            }
+        } else {
+            const noBlanksMsg = document.createElement('div');
+            noBlanksMsg.style.padding = '8px 0';
+            noBlanksMsg.style.color = '#2d6a4f';
+            noBlanksMsg.style.fontStyle = 'italic';
+            noBlanksMsg.innerText = '✅ В этой формуле нет пропусков (полная формула)';
+            inputsContainer.appendChild(noBlanksMsg);
+        }
+        blanksBlock.appendChild(inputsContainer);
+        body.appendChild(previewBlock);
+        body.appendChild(blanksBlock);
+        cardDiv.appendChild(header);
+        cardDiv.appendChild(body);
+        
+        // Объект карточки
+        const cardObj = {
+            dom: cardDiv,
+            previewDiv: mathSpan,
+            originalLatex: formula.latex,
+            inputs: inputElements,
+            blanksCount: formula.blanksCount,
+            samples: formula.samples,
+            index: index
+        };
+        
+        // Добавляем обработчики событий на поля ввода
+        if (inputElements.length) {
+            const updateHandler = () => updateFormulaDisplay(cardObj);
+            inputElements.forEach(inp => {
+                inp.addEventListener('input', updateHandler);
+            });
+            // Первый рендер (с пустыми полями -> все '?' останутся)
+            setTimeout(() => updateFormulaDisplay(cardObj), 0);
+        } else {
+            // Если нет пропусков, просто отображаем исходную формулу без изменений
+            cardObj.currentLatex = formula.latex;
+            mathSpan.innerHTML = `\\(\\displaystyle ${formula.latex}\\)`;
+            if (window.MathJax) {
+                MathJax.typesetPromise([mathSpan]).catch(e => console.log(e));
+            }
+        }
+        
+        return { cardDiv, cardObj };
+    }
+    
+    // Заполнить все поля примерами (образцы)
+    function fillAllSamples() {
+        for (let card of cards) {
+            if (card.blanksCount > 0 && card.samples.length) {
+                for (let i = 0; i < card.blanksCount && i < card.samples.length; i++) {
+                    if (card.inputs[i]) {
+                        card.inputs[i].value = card.samples[i];
+                    }
+                }
+                // обновить отображение после установки значений
+                updateFormulaDisplay(card);
+            }
+        }
+    }
+    
+    // Очистить все поля ввода (оставить пустыми, формула вернет ?)
+    function clearAllInputs() {
+        for (let card of cards) {
+            if (card.inputs.length) {
+                for (let inp of card.inputs) {
+                    inp.value = '';
+                }
+                updateFormulaDisplay(card);
+            }
+        }
+    }
+    
+    // Инициализация рендера всех карточек
+    function buildAllCards() {
+        const container = document.getElementById('formulasContainer');
+        container.innerHTML = '';
+        cards = [];
+        formulasData.forEach((formula, idx) => {
+            const { cardDiv, cardObj } = createFormulaCard(formula, idx);
+            container.appendChild(cardDiv);
+            cards.push(cardObj);
+        });
+    }
+    
+    // Дополнительная подгрузка: после сборки обеспечим первую отрисовку MathJax
+    async function initialRender() {
+        buildAllCards();
+        // После построения убедимся, что все формулы отрендерены
+        if (window.MathJax) {
+            try {
+                await MathJax.typesetPromise();
+            } catch(e) { console.warn(e); }
+        }
+        // для карт с пропусками, если поля пустые — отображаются '?'
+        for (let card of cards) {
+            if (card.inputs && card.inputs.length) {
+                await updateFormulaDisplay(card);
+            }
+        }
+    }
+    
+    // Дожидаемся загрузки страницы и MathJax готовности
+    window.addEventListener('load', async () => {
+        // Ожидаем, что MathJax инициализируется, но запускаем построение после загрузки
+        if (window.MathJax) {
+            // Даём MathJax небольшую фору, но построим сразу
+            await initialRender();
+        } else {
+            // fallback: если вдруг MathJax не загрузился, но такого не произойдёт
+            initialRender();
+        }
+        
+        // Кнопки управления
+        const sampleBtn = document.getElementById('fillSamplesBtn');
+        const clearBtn = document.getElementById('clearAllBtn');
+        if (sampleBtn) sampleBtn.addEventListener('click', fillAllSamples);
+        if (clearBtn) clearBtn.addEventListener('click', clearAllInputs);
+    });
+    
+    // дополнительная страховка: если MathJax еще не полностью отработал, перерендер через таймаут
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            if (window.MathJax && cards.length) {
+                for (let card of cards) {
+                    if (card.previewDiv) {
+                        MathJax.typesetPromise([card.previewDiv]).catch(e=>null);
+                    }
+                }
+            }
+        }, 200);
+    });
+</script>
+</body>
+</html>
