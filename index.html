@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Физика: заполни пропуски в формулах (греческие буквы)</title>
-    <!-- MathJax v3 для отображения формул (включая греческие буквы) -->
+    <title>Физика: заполни пропуски в формулах</title>
+    <!-- MathJax v3 для отображения формул -->
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <style>
         * {
@@ -67,17 +67,6 @@
             color: #1e293b;
         }
 
-        button.primary {
-            background: #1e3a8a;
-            border-color: #1e3a8a;
-            color: white;
-        }
-
-        button.primary:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-        }
-
         button.secondary {
             background: #f8fafc;
         }
@@ -85,16 +74,6 @@
         button.secondary:hover {
             background: #e2e8f0;
             border-color: #94a3b8;
-        }
-
-        button.warning {
-            background: #fef9c3;
-            border-color: #eab308;
-            color: #854d0e;
-        }
-
-        button.warning:hover {
-            background: #fde047;
         }
 
         .grid {
@@ -108,7 +87,6 @@
             border-radius: 28px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.02);
             overflow: hidden;
-            transition: all 0.1s ease;
             border: 1px solid #e2e8f0;
         }
 
@@ -118,7 +96,6 @@
             border-bottom: 1px solid #e2e8f0;
             font-weight: 600;
             font-size: 1.2rem;
-            letter-spacing: -0.2px;
             display: flex;
             align-items: baseline;
             gap: 10px;
@@ -147,7 +124,6 @@
             font-size: 1.3rem;
             border: 1px solid #fde68a;
             margin-bottom: 24px;
-            box-shadow: inset 0 1px 3px #00000008, 0 1px 2px white;
             overflow-x: auto;
             white-space: pre-wrap;
             word-break: break-word;
@@ -181,14 +157,14 @@
 
         .input-item {
             flex: 1;
-            min-width: 140px;
+            min-width: 180px;
         }
 
         .input-item label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            color: #334155;
+            color: #0c4a6e;
             margin-bottom: 6px;
         }
 
@@ -239,69 +215,36 @@
         <span style="font-size: 0.8rem; background: #e6f0ff; padding: 5px 12px; border-radius: 60px;">✏️ интерактивные поля</span>
     </h1>
     <div class="sub">
-        📐 Каждый «?» обозначает пропущенную величину. Введи ответ в поля ниже — формула будет обновляться автоматически.
-        <br>💡 Можно использовать LaTeX: <code>\alpha, \beta, \pi, \Delta, \theta, \omega</code> и другие греческие буквы.
-        <br>🔽 Пример: введи <code>\frac{mv^2}{2}</code> или <code>\omega t</code>.
+        📐 Каждый символ «<strong>?</strong>» в формуле обозначает пропущенную часть.<br>
+        💡 Введите в поля подходящее выражение (можно использовать LaTeX, например <code>\frac{}{}</code> или <code>\alpha</code>).
     </div>
     <div class="controls">
-        <button id="fillSamplesBtn" class="primary">🔍 Показать примеры ответов</button>
         <button id="clearAllBtn" class="secondary">🧹 Очистить все поля</button>
     </div>
     <div id="formulasContainer" class="grid"></div>
     <footer>
-        Формулы из задания • Греческие буквы отображаются через LaTeX (например, \alpha → α)
+        Введите свои варианты — формула обновится автоматически.
     </footer>
 </div>
 
 <script>
-    // ----- Исходные данные формул (исправлено количество '?' и blanksCount) -----
+    // ----- Формулы: количество '?' определяет число полей ввода -----
     const formulasData = [
-        { 
-            latex: "F_A = ? \\, I \\, L \\, \\sin \\alpha",
-            blanksCount: 1,
-            samples: ["B"]   // сила Ампера: F_A = B I L sinα → пропуск B
-        },
-        { 
-            latex: "? = \\frac{?}{? \\, v \\, \\sin \\alpha}",
-            blanksCount: 3,   // три пропуска: левая часть, числитель, знаменатель (без v sinα)
-            samples: ["B", "F_A", "I"]   // B = F_A / (I v sinα) для силы Лоренца
-        },
-        { 
-            latex: "R = \\frac{? \\, v}{B \\, ?}",
-            blanksCount: 2,
-            samples: ["m", "|q|"]   // радиус в магнитном поле: R = (m v)/(|q| B)
-        },
-        { 
-            latex: "T = \\frac{? 2\\pi}{? |q|}",
-            blanksCount: 0,
-            samples: []
-        },
-        { 
-            latex: "? = \\frac{?}{S \\, \\cos \\alpha}",
-            blanksCount: 2,
-            samples: ["p", "F"]   // давление: p = F / (S cosα) для наклонной площадки
-        },
-        { 
-            latex: "? = ? \\, I",
-            blanksCount: 2,
-            samples: ["U", "R"]   // U = R·I
-        },
-        { 
-            latex: "W_m = \\frac{? \\, I^2}{2}",
-            blanksCount: 1,
-            samples: ["L"]   // энергия магнитного поля катушки: W_m = (L I^2)/2
-        },
-        { 
-            latex: "\\mathcal{E}_c = - \\, \\frac{L\\Delta ?}{?}",
-            blanksCount: 1,
-            samples: ["I"]   // ЭДС самоиндукции: ε_c = -L ΔI/Δt
-        },
-        { 
-            latex: "? = \\frac{-\\Delta P}{?}",
-            blanksCount: 2,
-            samples: ["\\frac{\\Delta V}{V}", "B"]   // объёмная упругость: ΔV/V = -ΔP/B
-        }
+        { latex: "F_A = ? \\, I \\, L \\, \\sin \\alpha" },
+        { latex: "? = \\frac{?}{? \\, v \\, \\sin \\alpha}" },
+        { latex: "R = \\frac{? \\, v}{B \\, ?}" },
+        { latex: "T = \\frac{? \\, 2\\pi}{? \\, |q|}" },
+        { latex: "? = \\frac{?}{S \\, \\cos \\alpha}" },
+        { latex: "? = ? \\, I" },
+        { latex: "W_m = \\frac{? \\, I^2}{2}" },
+        { latex: "\\mathcal{E}_c = - \\, \\frac{L \\, \\Delta ?}{?}" },
+        { latex: "? = -\\frac{\\Delta P}{?}" }
     ];
+
+    // Подсчёт количества символов '?' в строке LaTeX
+    function countBlanks(latexStr) {
+        return (latexStr.match(/\?/g) || []).length;
+    }
 
     let cards = [];
 
@@ -335,6 +278,7 @@
 
     // Создание карточки формулы
     function createFormulaCard(formula, index) {
+        const blanksCount = countBlanks(formula.latex);
         const cardDiv = document.createElement('div');
         cardDiv.className = 'card';
         
@@ -342,7 +286,7 @@
         header.className = 'card-header';
         header.innerHTML = `
             <span>Формула ${index+1}</span>
-            <span class="formula-num">${formula.blanksCount} пропуск(а/ов)</span>
+            <span class="formula-num">${blanksCount} пропуск(а/ов)</span>
         `;
         
         const body = document.createElement('div');
@@ -358,22 +302,22 @@
         blanksBlock.className = 'blanks-area';
         const blanksTitle = document.createElement('div');
         blanksTitle.className = 'blanks-title';
-        blanksTitle.innerHTML = `✏️ Заполните пропуски ${formula.blanksCount > 0 ? '(«?» в формуле)' : '(нет пропусков)'}`;
+        blanksTitle.innerHTML = `✏️ Заполните пропуски ${blanksCount > 0 ? '(«?» в формуле)' : '(нет пропусков)'}`;
         blanksBlock.appendChild(blanksTitle);
         
         const inputsContainer = document.createElement('div');
         inputsContainer.className = 'input-group';
         
         const inputElements = [];
-        if (formula.blanksCount > 0) {
-            for (let i = 0; i < formula.blanksCount; i++) {
+        if (blanksCount > 0) {
+            for (let i = 0; i < blanksCount; i++) {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'input-item';
                 const label = document.createElement('label');
                 label.innerText = `Пропуск ${i+1}`;
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.placeholder = `например, ${formula.samples[i] || '?'}`;
+                input.placeholder = `введите выражение`;
                 input.autocomplete = 'off';
                 itemDiv.appendChild(label);
                 itemDiv.appendChild(input);
@@ -399,8 +343,7 @@
             previewDiv: mathSpan,
             originalLatex: formula.latex,
             inputs: inputElements,
-            blanksCount: formula.blanksCount,
-            samples: formula.samples,
+            blanksCount: blanksCount,
             index: index
         };
         
@@ -421,21 +364,7 @@
         return { cardDiv, cardObj };
     }
     
-    // Заполнить все поля примерами
-    function fillAllSamples() {
-        for (let card of cards) {
-            if (card.blanksCount > 0 && card.samples.length) {
-                for (let i = 0; i < card.blanksCount && i < card.samples.length; i++) {
-                    if (card.inputs[i]) {
-                        card.inputs[i].value = card.samples[i];
-                    }
-                }
-                updateFormulaDisplay(card);
-            }
-        }
-    }
-    
-    // Очистить все поля
+    // Очистить все поля ввода
     function clearAllInputs() {
         for (let card of cards) {
             if (card.inputs.length) {
@@ -475,13 +404,11 @@
     
     window.addEventListener('load', async () => {
         await initialRender();
-        const sampleBtn = document.getElementById('fillSamplesBtn');
         const clearBtn = document.getElementById('clearAllBtn');
-        if (sampleBtn) sampleBtn.addEventListener('click', fillAllSamples);
         if (clearBtn) clearBtn.addEventListener('click', clearAllInputs);
     });
     
-    // Повторный рендеринг для греческих букв, введённых пользователем
+    // Повторный рендеринг для введённых пользователем выражений
     window.addEventListener('load', () => {
         setTimeout(() => {
             if (window.MathJax && cards.length) {
